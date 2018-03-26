@@ -99,6 +99,21 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
         </dependency>
+        <!-- Apache Commons DBUtils类库，提供jdbc封装-->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <!-- 考虑到频繁调用getConnection方式就会频繁创建数据库连接，
+        这样做会造成大量系统开销，毕竟数据库的连接数也是有限的
+        ，需要考虑将数据库连接池化，这里引入DBCP连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
         <!-- Junit测试 -->
         <dependency>
             <groupId>junit</groupId>

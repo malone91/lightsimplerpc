@@ -1,10 +1,12 @@
 package org.malone.reborn.service;
 
+import org.malone.reborn.helper.DataBaseHelper;
 import org.malone.reborn.model.Customer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.sql.*;
+import java.util.*;
 
 /**
  * Created by Ablert
@@ -13,13 +15,45 @@ import java.util.Objects;
  */
 public class CustomerService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
+
     /**
-     * 获取客户列表
-     * @param customer
+     * 获取客户列表 初级版本
      * @return
      */
-    public List<Customer> getCustomerList(Customer customer) {
+    public List<Customer> getCustomerList() {
+        Connection connection = null;
+        try {
+            List<Customer> customerList = new ArrayList<Customer>();
+            String sql = "select * from customer";
+            connection = DataBaseHelper.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            Customer customer;
+            while (resultSet.next()) {
+                customer = new Customer();
+                customer.setId(resultSet.getLong("customer_id"));
+                customer.setName(resultSet.getString("name"));
+                customer.setContact(resultSet.getString("contact"));
+                customer.setTelephone(resultSet.getString("telephone"));
+                customer.setEmail(resultSet.getString("email"));
+                customer.setRemark(resultSet.getString("remark"));
+                customerList.add(customer);
+            }
+            return  customerList;
+        } catch (SQLException e) {
+            LOGGER.error("execute sql failure", e);
+        }
         return null;
+    }
+
+    /**
+     * 获取客户列表 简单方法
+     * @return
+     */
+    public List<Customer> getCustomerListSimple() {
+        String sql = "select * from customer";
+        return DataBaseHelper.queryEntityList(Customer.class, sql);
     }
 
     /**
@@ -36,8 +70,8 @@ public class CustomerService {
      * @param map
      * @return
      */
-    public boolean createCustomer(Map<String,Objects> map) {
-        return false;
+    public boolean createCustomer(Map<String,Object> map) {
+        return DataBaseHelper.insertEntity(Customer.class, map);
     }
 
     /**
@@ -46,8 +80,8 @@ public class CustomerService {
      * @param map
      * @return
      */
-    public boolean updateCustomer(long id,Map<String,Objects> map) {
-        return false;
+    public boolean updateCustomer(long id, Map<String,Object> map) {
+        return DataBaseHelper.updateEntity(Customer.class, id, map);
     }
 
     /**
@@ -56,6 +90,6 @@ public class CustomerService {
      * @return
      */
     public boolean deleteCustomer(long id) {
-        return false;
+        return DataBaseHelper.deleteEntity(Customer.class, id);
     }
 }
